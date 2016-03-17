@@ -75,3 +75,8 @@ Hacking on the extension is really easy.
 * Make your changes
 * `webpack` in the top-level directory.
 * Load it into `chrome://extensions` in the normal way.
+
+## Roadmap
+
+* Redo approach to CSS. Haven't yet had time to implement something proper.
+* Include variable digestion.
