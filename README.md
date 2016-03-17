@@ -26,11 +26,17 @@ GraphQL network allows you to actually monitor and debug network requests again,
 #### Looking through GraphQL requests.
 ![Easy to navigate list](http://bwes.co/easy-to-navigate.png)
 
+
+
 #### Viewing the Raw Query
 ![Post Body](http://bwes.co/post-body.png)
 
+
+
 #### Viewing the Computed Query
 ![Computed Fragments](http://bwes.co/compute-fragments.png)
+
+
 
 #### Viewing the Response
 ![Response Data](http://bwes.co/response-data.png)
@@ -66,5 +72,6 @@ Hacking on the extension is really easy.
 
 * Clone the repo
 * `npm install`
+* Make your changes
 * `webpack` in the top-level directory.
 * Load it into `chrome://extensions` in the normal way.
