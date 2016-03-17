@@ -62,4 +62,4 @@ It's likely that there's a bug in the extension. Open an issue.
 
 ## Contributing
 
-Hacking on the extension is really easy. Just clone the repo, make your changes and then `webpack` in the top-level directory.
+Hacking on the extension is really easy. Just clone the repo, make your changes and then `webpack` in the top-level directory. From there load it into `chrome://extensions` in the normal way.
