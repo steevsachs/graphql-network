@@ -43,17 +43,15 @@ export default class Collapsable extends React.Component {
     return (
       <div className="collapsable">
         <div className={`nameParamWrapper ${fields && closable && 'hasChildren'} ${opened ? 'opened' : 'closed'}`} onClick={() => requestOpen(object.name)}>
-          {true && (
-            <p className="name" onClick={() => requestOpen(object.name)}>
-              {object.kind !== 'FragmentSpread' && object.name}
-              {object.kind === 'FragmentSpread' && (
-                <Computed
-                  request={fragments.filter(x => x.name === object.name)[0]}
-                  fragments={fragments}
-                />
-              )}
-            </p>
-          )}
+          <p className="name" onClick={() => requestOpen(object.name)}>
+            {object.kind !== 'FragmentSpread' && object.name}
+            {object.kind === 'FragmentSpread' && (
+              <Computed
+                request={fragments.filter(x => x.name === object.name)[0]}
+                fragments={fragments}
+              />
+            )}
+          </p>
           {object.params && object.params.length > 0 && (
             <div className="params">
               {object.params.map(param => (
