@@ -68,7 +68,7 @@ function internalParse(requestData) {
 
 function isContentType(entry, contentType) {
   return entry.request.headers.some(({ name, value }) => {
-    return name.toLowerCase() === 'content-type' && value.toLowerCase() === contentType.toLowerCase();
+    return name.toLowerCase() === 'content-type' && value.split(';')[0].toLowerCase() === contentType.toLowerCase();
   });
 }
 
