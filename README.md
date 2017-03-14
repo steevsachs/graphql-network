@@ -54,6 +54,7 @@ Because of the way Chrome Devtool extensions work, you'll need to have the Graph
 Additionally, the extension will only pick up requests that send the `Content-Type` header with:
 * `application/graphql`
 * `application/json` where the GraphQL query is in an object parameter called `query`
+* `application/x-www-form-urlencoded` where the GraphQL query is in a parameter called `query`
 
 Since GraphQL is fairly new, consensus hasn't exactly been reached on the best way to make queries, if you think another way should be supported, send a PR or open an issue.
 
