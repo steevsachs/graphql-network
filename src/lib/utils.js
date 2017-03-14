@@ -72,10 +72,16 @@ function isContentType(entry, contentType) {
   });
 }
 
+function getQueryFromParams(params = []) {
+  return decodeURIComponent(params.find(param => param.name === 'query').value);
+}
+
 export function isGraphQL(entry) {
   try {
     return isContentType(entry, 'application/graphql') || (
       isContentType(entry, 'application/json') && JSON.parse(entry.request.postData.text).query
+    ) || (
+      isContentType(entry, 'application/x-www-form-urlencoded') && getQueryFromParams(entry.request.postData.params)
     );
   } catch (e) {
     return false;
@@ -86,6 +92,8 @@ export function parseEntry(entry) {
   let data;
   if (isContentType(entry, 'application/graphql')) {
     data = entry.request.postData.text;
+  } else if (isContentType(entry, 'application/x-www-form-urlencoded')) {
+    data = getQueryFromParams(entry.request.postData.params);
   } else {
     data = JSON.parse(entry.request.postData.text).query;
   }
