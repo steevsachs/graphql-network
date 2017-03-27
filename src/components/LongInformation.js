@@ -28,6 +28,7 @@ export default class LongInformation extends React.Component {
           {view === 'raw' && (
             <Raw
               query={entry.bareQuery}
+              queryVariables={entry.queryVariables}
             />
           )}
           {view === 'computed' && entry.data && entry.data.map((request, i) => {
