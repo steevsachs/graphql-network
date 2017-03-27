@@ -98,9 +98,13 @@ export function parseEntry(entry) {
   } else if (isContentType(entry, 'application/x-www-form-urlencoded')) {
     data = getQueryFromParams(entry.request.postData.params);
   } else {
-    const parsed = JSON.parse(entry.request.postData.text);
-    data = parsed.query;
-    queryVariables = JSON.parse(parsed.variables);
+    try {
+      const { query, variables } = JSON.parse(entry.request.postData.text);
+      data = query;
+      queryVariables = typeof variables === 'string' ? JSON.parse(variables) : variables;
+    } catch (e) {
+      return Promise.resolve(`Internal Error Parsing: ${entry}. Message: ${e.message}. Stack: ${e.stack}`);
+    }
   }
 
   const query = data;
