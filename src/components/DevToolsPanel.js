@@ -27,7 +27,7 @@ export default class DevToolsPanel extends React.Component {
     return parseEntry(log)
       .then(data => {
         this.setState({
-          data: [...this.state.data, data],
+          data: [...this.state.data, ...data],
         });
       });
   };

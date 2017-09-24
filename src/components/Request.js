@@ -45,5 +45,5 @@ export default function Request({
 }
 
 Request.propTypes = {
-  request: React.PropTypes.array.isRequired,
+  request: React.PropTypes.object.isRequired,
 };
