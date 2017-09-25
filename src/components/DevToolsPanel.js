@@ -39,6 +39,13 @@ export default class DevToolsPanel extends React.Component {
   setEntry = (entry, i) => this.setState({ entryOpen: entry, openIndex: i });
   onRequestClose = () => this.setState({ entryOpen: false, openIndex: null });
 
+  clearEntries = () => {
+    this.setState({
+      data: [],
+      entryOpen: false
+    });
+  }
+
   componentDidMount() {
     this.props.requestFinished.addListener(this.requestHandler);
   }
@@ -65,6 +72,11 @@ export default class DevToolsPanel extends React.Component {
             />
           );
         })}
+        {data.length > 0 &&
+          <div className="clearContainer">
+            <button onClick={() => this.clearEntries()}>Clear</button>
+          </div>
+        }
         </div>
         <div className={`displayAreaWrapper ${entryOpen && 'longDisplayAreaWrapper'}`}>
           {entryOpen && (
