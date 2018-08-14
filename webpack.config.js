@@ -8,9 +8,10 @@ function matchSources(sourcePath) {
 const babelLoader = {
   test: /\.js$/,
   loader: 'babel',
-  include: matchSources,
+  //include: matchSources,
+  exclude: '/node_modules/',
   query: {
-    presets: ['es2015', 'stage-0', 'react'],
+    presets: ['react', 'es2015', 'stage-0'],
   },
 };
 
