@@ -78,36 +78,77 @@ function getQueryFromParams(params = []) {
 
 export function isGraphQL(entry) {
   try {
-    return isContentType(entry, 'application/graphql') || (
-      isContentType(entry, 'application/json') && JSON.parse(entry.request.postData.text).query
-    ) || (
-      isContentType(entry, 'application/x-www-form-urlencoded') && getQueryFromParams(entry.request.postData.params)
-    );
+    if (isContentType(entry, 'application/graphql')) {
+      return true;
+    }
+
+    if (isContentType(entry, 'application/json')) {
+      const json = JSON.parse(entry.request.postData.text);
+      return json.query || json[0].query;
+    }
+
+    if (isContentType(entry, 'application/x-www-form-urlencoded') && getQueryFromParams(entry.request.postData.params)) {
+      return true;
+    }
   } catch (e) {
     return false;
   }
 }
 
 export function parseEntry(entry) {
-  let data;
-  let queryVariables;
+  const parsedQueries = [];
 
   if (isContentType(entry, 'application/graphql')) {
-    data = entry.request.postData.text;
-    queryVariables = entry.request.postData.variables;
+    parsedQueries.push(parseQuery(
+      entry.request.postData.text,
+      entry.request.postData.variables
+    ));
   } else if (isContentType(entry, 'application/x-www-form-urlencoded')) {
-    data = getQueryFromParams(entry.request.postData.params);
+    parsedQueries.push(parseQuery(getQueryFromParams(entry.request.postData.params)));
   } else {
+    let json;
+
     try {
-      const { query, variables } = JSON.parse(entry.request.postData.text);
-      data = query;
-      queryVariables = typeof variables === 'string' ? JSON.parse(variables) : variables;
+      json = JSON.parse(entry.request.postData.text);
     } catch (e) {
       return Promise.resolve(`Internal Error Parsing: ${entry}. Message: ${e.message}. Stack: ${e.stack}`);
     }
+
+    if (!Array.isArray(json)) {
+      json = [json];
+    }
+
+    for (let batchItem of json) {
+      const { query } = batchItem;
+      let { variables } = batchItem;
+
+      try {
+        variables = typeof variables === 'string' ? JSON.parse(variables) : variables;
+      } catch (e) {
+        return Promise.resolve(`Internal Error Parsing: ${entry}. Message: ${e.message}. Stack: ${e.stack}`);
+      }
+
+      parsedQueries.push(parseQuery(query, variables));
+    }
   }
 
-  const query = data;
+  return new Promise(resolve => {
+    entry.getContent(responseBody => {
+      const parsedResponseBody = JSON.parse(responseBody);
+
+      resolve(parsedQueries.map((parsedQuery, i) => {
+        return {
+          responseBody: Array.isArray(parsedResponseBody) ? parsedResponseBody[i] : parsedResponseBody,
+          url: entry.request.url,
+          response: entry.response,
+          ...parsedQuery
+        };
+      }));
+    });
+  });
+}
+
+export function parseQuery(query, variables={}) {
   let requestData,
     rawParse;
 
@@ -126,19 +167,12 @@ export function parseEntry(entry) {
   const fragments = requestData
     .filter(x => x.kind === 'FragmentDefinition');
 
-  return new Promise(resolve => {
-    entry.getContent(responseBody => {
-      resolve({
-        responseBody,
-        queryVariables,
-        fragments,
-        id: `${Date.now() + Math.random()}`,
-        url: entry.request.url,
-        bareQuery: data,
-        data: requestData,
-        response: entry.response,
-        rawParse: JSON.stringify(rawParse),
-      });
-    });
-  });
+  return {
+    queryVariables: variables,
+    fragments,
+    id: `${Date.now() + Math.random()}`,
+    bareQuery: query,
+    data: requestData,
+    rawParse: JSON.stringify(rawParse),
+  };
 }

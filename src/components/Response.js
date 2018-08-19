@@ -9,7 +9,7 @@ export default function Response({
       <h3>Response</h3>
       <div className="responseJson">
         <CollapsableObject
-          object={JSON.parse(response)}
+          object={response}
           topLevel
           open
         />
