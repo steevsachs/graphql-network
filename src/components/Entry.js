@@ -1,5 +1,5 @@
 import React from 'react';
-import Request from './Request';
+import Definition from './Definition';
 
 export default function Entry({
   entry,
@@ -13,7 +13,7 @@ export default function Entry({
       </div>
       {entry.data && entry.data.map((request, i) => {
         if (request.kind !== 'FragmentDefinition') {
-          return <Request key={`request-${i}`} request={request} />;
+          return <Definition key={`request-${i}`} request={request} />;
         }
       })}
       {!entry.data && (
